@@ -65,7 +65,7 @@ void test_inf_norm(int size,int niter){
 int main(int argc, char const *argv[])
 {
 
-	test_inf_norm<double,double>(100,1000);
+	test_inf_norm<double,double>(70,1000);
 
 	cudaErrorCheck(cudaDeviceReset());
 

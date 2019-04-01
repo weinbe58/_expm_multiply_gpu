@@ -233,7 +233,6 @@ inf_norm_kernel(T *g_idata, realT *g_odata, unsigned int n)
 
     __syncthreads();
 #endif
-
     // write result for this block to global mem
     if (tid == 0) g_odata[blockIdx.x] = myMax;
 }
@@ -255,7 +254,7 @@ void inf_norm_case(const I size,const unsigned int blocks,const unsigned int thr
     int smemSize = (threads <= 32) ? 2 * threads * sizeof(T) : threads * sizeof(T);
     
     bool ispow2 = !((~(~0U>>1)|size)&size -1);
-
+    // printf("%d    %d   %d\n",threads,blocks, size);
     if(ispow2){
         switch(threads){
             case 512:
@@ -324,7 +323,7 @@ void inf_norm_case(const I size,const unsigned int blocks,const unsigned int thr
                 break;
         }
     }
-
+    cudaErrorCheck(cudaGetLastError());
 
 }
 

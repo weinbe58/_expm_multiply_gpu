@@ -10,7 +10,7 @@ from cProfile import Profile
 
 # np.random.seed(0)
 
-L=18
+L=20
 
 J = [[1.0,i,(i+1)%L] for i in range(L)]
 static = [["xx",J],["yy",J],["zz",J]]
@@ -20,11 +20,11 @@ H = hamiltonian(static,[],basis=basis,dtype=np.float64)
 
 
 
-a = -10j
+a = -1j
 
 A = a*H.static
 
-
+niter = 1
 
 
 
@@ -39,7 +39,7 @@ U2 = expm_multiply_parallel(H.static,a=a)
 pr=Profile()
 pr.enable()
 U1.load_vector(v)
-for i in range(10):
+for i in range(niter):
 	U1.run_expm_multiply(1024)
 r1 = U1.get_result()
 pr.disable()
@@ -48,9 +48,19 @@ pr.print_stats(sort="time")
 r2 = v.copy()
 pr=Profile()
 pr.enable()
-for i in range(10):
+for i in range(niter):
 	U2.dot(r2,work_array=work,overwrite_v=True)
 pr.disable()
 pr.print_stats(sort="time")
 
-print np.mean(np.abs(r1-r2))
+r3 = v.copy()
+pr=Profile()
+pr.enable()
+for i in range(niter):
+	r3 = expm_multiply(A,r3)
+pr.disable()
+# pr.print_stats(sort="time")
+
+
+print(np.linalg.norm(r2-r1))
+print(np.linalg.norm(r3-r1))
