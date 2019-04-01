@@ -10,7 +10,7 @@ from cProfile import Profile
 
 # np.random.seed(0)
 
-L=20
+L=22
 
 J = [[1.0,i,(i+1)%L] for i in range(L)]
 static = [["xx",J],["yy",J],["zz",J]]
@@ -20,7 +20,7 @@ H = hamiltonian(static,[],basis=basis,dtype=np.float64)
 
 
 
-a = -1j
+a = -10j
 
 A = a*H.static
 
@@ -59,7 +59,7 @@ pr.enable()
 for i in range(niter):
 	r3 = expm_multiply(A,r3)
 pr.disable()
-# pr.print_stats(sort="time")
+pr.print_stats(sort="time")
 
 
 print(np.linalg.norm(r2-r1))

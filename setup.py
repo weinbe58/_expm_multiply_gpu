@@ -12,7 +12,7 @@ def build_static_lib():
     data_path = os.path.expandvars(data_path)
     script = os.path.join(package_dir,'build_lib_dynamic.sh')
     data_path = get_paths()["data"]
-    nvcc_path = os.path.join(os.sep,"usr","bin","nvcc")
+    nvcc_path = os.environ["NVCC"]
     cmd = ["bash",script,nvcc_path,package_dir]
     subprocess.check_call(cmd)
 
