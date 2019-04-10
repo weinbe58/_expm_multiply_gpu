@@ -165,8 +165,6 @@ cudaError_t expm_multiply_core(expm_multiply_gpu<I,realT,T> * expm_obj,const int
     cudaStream_t s1 = expm_obj->s1;
     cudaStream_t s2 = expm_obj->s2;
 
-
-    int nnorm=0,nmv=0;
     T* F = expm_obj->F;
     T* B1 = expm_obj->B1;
     T* B2 = expm_obj->B2;
@@ -190,10 +188,7 @@ cudaError_t expm_multiply_core(expm_multiply_gpu<I,realT,T> * expm_obj,const int
 
         cudaStreamWaitEvent(s2,e0,0);
         inf_norm<I,realT,T>(n_rows,F,work1,n_h,s2);
-        nnorm++;
-
-        // cudaMemsetAsync(B2,0,n_rows*sizeof(T),s1);
-        
+    
 		cudaEventDestroy(e0);
        	
         for(int j=1;j<m_star+1;j++){
@@ -201,7 +196,6 @@ cudaError_t expm_multiply_core(expm_multiply_gpu<I,realT,T> * expm_obj,const int
             cudaEventCreateWithFlags(&e1, cudaEventDisableTiming);
             // B2 -> A * B1
             (*expm_obj->matvec)(B1,B2,step);
-            nmv++;
 
             cudaMemcpyAsync(B1,B2,n_rows*sizeof(T),cudaMemcpyDeviceToDevice,s1);
           
@@ -212,10 +206,10 @@ cudaError_t expm_multiply_core(expm_multiply_gpu<I,realT,T> * expm_obj,const int
             addinplace<<<blocks,threads,0,s2>>>(n_rows,F,B2);
             inf_norm<I,realT,T>(n_rows,B2,work1,n_h+1,s1); 
             inf_norm<I,realT,T>(n_rows,F ,work2,n_h+2,s2);
-            nnorm+=2;
 
             cudaDeviceSynchronize();
             cudaEventDestroy(e1);
+            
             if((n_h[0]+n_h[1])<=(tol*n_h[2])){
                 break;
             }

@@ -20,7 +20,7 @@ H = hamiltonian(static,[],basis=basis,dtype=np.float64)
 
 
 
-a = -10j
+a = -1j
 
 A = a*H.static
 
@@ -40,7 +40,7 @@ pr=Profile()
 pr.enable()
 U1.load_vector(v)
 for i in range(niter):
-	U1.run_expm_multiply(1024)
+	U1.run_expm_multiply(512)
 r1 = U1.get_result()
 pr.disable()
 pr.print_stats(sort="time")
@@ -53,14 +53,14 @@ for i in range(niter):
 pr.disable()
 pr.print_stats(sort="time")
 
-r3 = v.copy()
-pr=Profile()
-pr.enable()
-for i in range(niter):
-	r3 = expm_multiply(A,r3)
-pr.disable()
-pr.print_stats(sort="time")
+# r3 = v.copy()
+# pr=Profile()
+# pr.enable()
+# for i in range(niter):
+# 	r3 = expm_multiply(A,r3)
+# pr.disable()
+# pr.print_stats(sort="time")
 
 
-print(np.linalg.norm(r2-r1))
-print(np.linalg.norm(r3-r1))
+# print(np.linalg.norm(r2-r1))
+# print(np.linalg.norm(r3-r1))
